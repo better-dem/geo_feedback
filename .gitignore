@@ -93,3 +93,9 @@ ENV/
 
 # Emacs tmp files
 *~
+
+# Django static folders
+geo_feedback/staticfiles
+
+# Heroku local environment variables
+.env
