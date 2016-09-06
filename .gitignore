@@ -93,3 +93,6 @@ ENV/
 
 # Emacs tmp files
 *~
+
+# Django static folders
+geo_feedback/staticfiles
