@@ -42,8 +42,3 @@ def show_project(request, project_id):
 		ans+=(goal.name + "  ")
 	return HttpResponse(ans)
 
-def demo_map(request):
-    # View code here...
-    return render(request,
-                  'survey/demo_map.html',
-                  {'api_key' : os.environ["GOOGLE_MAPS_API_KEY"]})
