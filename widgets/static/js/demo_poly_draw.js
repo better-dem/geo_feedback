@@ -1,13 +1,21 @@
-// http://codepen.io/jhawes/post/creating-a-real-estate-polygon-tool
-<!--
-Copyright (c) 2015 by Jeremy Hawes (http://codepen.io/jhawes/pen/ujdgK)
+// (code inspired by the following, license copied below): http://codepen.io/jhawes/post/creating-a-real-estate-polygon-tool
+// Copyright (c) 2015 by Jeremy Hawes (http://codepen.io/jhawes/pen/ujdgK)
+// Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+// The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
--->
+// Display the coordinates below the map
+function getPolygonCoords() {
+	var len = my_polygon.getPath().getLength();
+	var htmlStr = "";
+	for (var i = 0; i < len; i++) {
+		htmlStr += "new google.maps.LatLng(" + 
+			my_polygon.getPath().getAt(i).toUrlValue(5) + 
+			"), ";
+	}
+	console.log(htmlStr);
+	//document.getElementById('info').innerHtml = htmlStr;
+}
 
 function initMap() {
 	// Initialize map to certain coordinates
@@ -15,9 +23,9 @@ function initMap() {
 	var map_options = {
 		zoom : 12,
 		center: my_center,
-        mapTypeId: google.maps.mapTypeId.RoadMap
+        mapTypeId: 'terrain'
     };
-	var map = new google.maps.Map(document.getElementById("poly_map"), map_options); 
+	var map = new google.maps.Map(document.getElementById("poly-map"), map_options); 
 	// Initilalize polygon drawing
 
 	var orig_coords = [
@@ -38,22 +46,12 @@ function initMap() {
   		fillOpacity : 0.25
   	});
   	my_polygon.setMap(map);
+
   	google.maps.event.addListener(my_polygon.getPath(), "insert_at", getPolygonCoords);
   	google.maps.event.addListener(my_polygon.getPath(), "set_at", getPolygonCoords);
+  	google.maps.event.addListener(my_polygon.getPath(), "remove_at", getPolygonCoords);
+
 }
 
-// Display the coordinates below the map
-function getPolygonCoords() {
-	var len = my_polygon.getPath().getLength();
-	var htmlStr = "";
-	for (var i = 0; i < len; i++) {
-		htmlStr += "new google.maps.LatLng(" + 
-			my_polygon.getPath().getAt(i).toUrlValue(5) + 
-			"), ";
-	}
-	document.getElementById('info').innerHtml = htmlStr;
-}
 
-function copyToClipboard(text) {
-	window.prompt("Copy to clipboard: Ctrl+C, Enter", text);
-}
+

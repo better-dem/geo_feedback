@@ -10,15 +10,11 @@
 
 
   <body>
-    <body onload="initMap()">
-      <h3>Drag or re-shape for coordinates to display below</h3>
-      <h3><a href="http://codepen.io/jhawes/blog/creating-a-real-estate-polygon-tool">See blog post</a></h3>
-      <div id="poly-map"></div>
-      <div class="lngLat"><span class="one">Lat</span><span class="two">,Lng</span></div>
-    </body>
-    <button id="clipboard-btn" onclick="copyToClipboard(document.getElementById('info').innerHTML)">Copy to Clipboard</button>
-    <textarea id="info"></textarea>
-    <script src='https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=false'></script>
+    <div id="poly-map"></div>
+    <script async defer
+      src="https://maps.googleapis.com/maps/api/js?key={{ api_key }}&callback=initMap">
+    </script>
+    <!-- <script src='https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=false'></script>-->
     <script type="text/javascript" src="{% static "js/demo_poly_draw.js" %}"></script>
   </body>
 </html>
