@@ -16,6 +16,7 @@ class Question(models.Model):
 	feedback_goal = models.ForeignKey('FeedbackGoal', on_delete=models.CASCADE)
 	question_text = models.CharField(max_length = 200)
 
+#Text Multi Choice Question
 class TMCQ(Question):
 	option1 = models.CharField(max_length = 30)
 	option2 = models.CharField(max_length = 30)
