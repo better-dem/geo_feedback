@@ -6,7 +6,7 @@
 
 // Display the coordinates below the map
 
-function initializeMap() {
+function initMap() {
 	// Initialize map to certain coordinates
 	var my_center = new google.maps.LatLng(37.38, -122.0);
 	var map_options = {
