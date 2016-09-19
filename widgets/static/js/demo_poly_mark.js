@@ -15,6 +15,36 @@ function getPolygonCoords() {
 	console.log(htmlStr);
 	//document.getElementById('info').innerHtml = htmlStr;
 }
+var numAvailable = 5;
+var numClicked = 0;
+var colorArray = ['green', 'blue', 'yellow', 'gray', 'magenta'];
+var markerArray = []
+
+function addMarker(e, polygon, map) {
+	console.log("Here");
+	if (numClicked >= numAvailable) {
+		console.log("Exceeds number of allowed markers");
+		return;
+	}
+	if (google.maps.geometry.poly.containsLocation(e.latLng, polygon)) {
+		var markerColor = colorArray[numClicked];
+		var marker = new google.maps.Marker({
+			position: e.latLng,
+			map: map,
+			draggable: true,
+			icon: {
+				path: google.maps.SymbolPath.CIRCLE,
+				fillColor: markerColor,
+				fillOpacity: 0.2,
+				strokeColor: 'white',
+				strokeWeight: 0.5,
+				scale: 10 
+			}
+		});
+		markerArray.push(marker);
+		numClicked++;
+	}
+}
 
 function initMap() {
 	// Initialize map to certain coordinates
@@ -24,7 +54,7 @@ function initMap() {
 		center: my_center,
         mapTypeId: 'terrain'
     };
-	var map = new google.maps.Map(document.getElementById("poly-map"), map_options); 
+	var map = new google.maps.Map(document.getElementById("poly-mark-map"), map_options); 
 	// Initilalize polygon drawing
 
 	var orig_coords = [
@@ -36,19 +66,15 @@ function initMap() {
   	// Styling and controls
   	my_polygon = new google.maps.Polygon({
   		paths : orig_coords,
-  		draggable : true,
-  		editable : true,
+  		draggable : false,
   		strokeColor : '#FF0000',
   		strokeOpacity : 0.8,
   		strokeWeight : 2,
-  		fillColor : '#FF0000',
-  		fillOpacity : 0.25
+  		fillOpacity: 0.0,
+  		map: map
   	});
-  	my_polygon.setMap(map);
-
-  	google.maps.event.addListener(my_polygon.getPath(), "insert_at", getPolygonCoords);
-  	google.maps.event.addListener(my_polygon.getPath(), "set_at", getPolygonCoords);
-  	google.maps.event.addListener(my_polygon.getPath(), "remove_at", getPolygonCoords);
-
+  	google.maps.event.addListener(my_polygon, 'click', function(e) {
+		addMarker(e, my_polygon, map);
+	});
 }
 

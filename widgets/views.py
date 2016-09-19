@@ -13,3 +13,8 @@ def demo_poly_draw(request):
     return render(request,
                   'widgets/demo_poly_draw.html',
                   {'api_key' : os.environ["GOOGLE_MAPS_API_KEY"]})
+
+def demo_poly_mark(request):
+    return render(request,
+                  'widgets/demo_poly_mark.html',
+                  {'api_key' : os.environ["GOOGLE_MAPS_API_KEY"]})
