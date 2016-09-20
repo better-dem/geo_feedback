@@ -4,45 +4,67 @@
 // The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 // THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
+var num_available = 5;
+var num_clicked = 0;
+var color_array = ['green', 'blue', 'yellow', 'gray', 'magenta'];
+var marker_array = []
+
 function getPolygonCoords() {
 	var len = my_polygon.getPath().getLength();
-	var htmlStr = "";
+	var html_str = "";
 	for (var i = 0; i < len; i++) {
-		htmlStr += "new google.maps.LatLng(" + 
+		html_str += "new google.maps.LatLng(" + 
 			my_polygon.getPath().getAt(i).toUrlValue(5) + 
 			"), ";
 	}
-	console.log(htmlStr);
+	console.log(html_str);
 	//document.getElementById('info').innerHtml = htmlStr;
 }
-var numAvailable = 5;
-var numClicked = 0;
-var colorArray = ['green', 'blue', 'yellow', 'gray', 'magenta'];
-var markerArray = []
 
 function addMarker(e, polygon, map) {
 	console.log("Here");
-	if (numClicked >= numAvailable) {
+	if (num_clicked >= num_available) {
 		console.log("Exceeds number of allowed markers");
 		return;
 	}
 	if (google.maps.geometry.poly.containsLocation(e.latLng, polygon)) {
-		var markerColor = colorArray[numClicked];
-		var marker = new google.maps.Marker({
-			position: e.latLng,
-			map: map,
-			draggable: true,
-			icon: {
-				path: google.maps.SymbolPath.CIRCLE,
-				fillColor: markerColor,
-				fillOpacity: 0.2,
-				strokeColor: 'white',
-				strokeWeight: 0.5,
-				scale: 10 
+		var markerColor = color_array[num_clicked];
+		// var marker = new google.maps.Marker({
+		// 	position: e.latLng,
+		// 	map: map,
+		// 	draggable: true,
+		// 	icon: {
+		// 		path: google.maps.SymbolPath.CIRCLE,
+		// 		fillColor: markerColor,
+		// 		fillOpacity: 0.2,
+		// 		strokeColor: 'white',
+		// 		strokeWeight: 0.5,
+		// 		scale: map.getZoom()
+		// 	}
+		// });
+		var marker = new google.maps.Circle({
+			center : e.latLng,
+			map : map,
+			draggable : true,
+			radius : 300,
+			fillColor : markerColor,
+			fillOpacity : 0.2,
+			strokeColor: 'white',
+			strokeWeight: 0.5
+		});
+		// Prevent the marker from being dragged outside polygon
+		var marker_start_position = null;
+		google.maps.event.addListener(marker, 'dragstart', function() {
+			marker_start_position = this.getCenter();
+		});
+		google.maps.event.addListener(marker, 'dragend', function() {
+			if (google.maps.geometry.poly.containsLocation(this.getCenter(), polygon) == false) {
+				alert("Marker dragged beyond bounds of polygon. Resetting.");
+				this.setCenter(marker_start_position);
 			}
 		});
-		markerArray.push(marker);
-		numClicked++;
+		marker_array.push(marker);
+		num_clicked++;
 	}
 }
 
