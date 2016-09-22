@@ -16,6 +16,21 @@ function getPolygonCoords() {
 	//document.getElementById('info').innerHtml = htmlStr;
 }
 
+function polygonCoordWriter(coord_tag_name) {
+	return function() {
+		var len = my_polygon.getPath().getLength();
+		var jsonArray = [];
+		for (var i = 0; i < len; i++) {
+			jsonArray.push("(" + 
+				my_polygon.getPath().getAt(i).toUrlValue(5) + 
+				")");
+		}
+		console.log(jsonArray);
+		$('input[name='+coord_tag_name+']').val(jsonArray);
+		// document.getElementByName(coord_tag_name).value = jsonArray;
+	}
+}
+
 function initMap() {
 	// Initialize map to certain coordinates
 	var my_center = new google.maps.LatLng(37.38, -122.0);
@@ -52,3 +67,39 @@ function initMap() {
 
 }
 
+function create_map_function(div_id, coord_tag_name) {
+	return function() {
+		// Initialize map to certain coordinates
+		var my_center = new google.maps.LatLng(37.38, -122.0);
+		var map_options = {
+			zoom : 12,
+			center: my_center,
+	        mapTypeId: 'terrain'
+	    };
+		var map = new google.maps.Map(document.getElementById(div_id), map_options); 
+		// Initilalize polygon drawing
+
+		var orig_coords = [
+			new google.maps.LatLng(37.41626,-122.03691), 
+			new google.maps.LatLng(37.37835,-122.0527), 
+			new google.maps.LatLng(37.39867,-121.97889)
+		];
+
+	  	// Styling and controls
+	  	my_polygon = new google.maps.Polygon({
+	  		paths : orig_coords,
+	  		draggable : true,
+	  		editable : true,
+	  		strokeColor : '#FF0000',
+	  		strokeOpacity : 0.8,
+	  		strokeWeight : 2,
+	  		fillColor : '#FF0000',
+	  		fillOpacity : 0.25
+	  	});
+	  	my_polygon.setMap(map);
+	  	var coord_update_function = polygonCoordWriter(coord_tag_name);
+	  	google.maps.event.addListener(my_polygon.getPath(), "insert_at", coord_update_function);
+	  	google.maps.event.addListener(my_polygon.getPath(), "set_at", coord_update_function);
+	  	google.maps.event.addListener(my_polygon.getPath(), "remove_at", coord_update_function);	
+	}
+}
