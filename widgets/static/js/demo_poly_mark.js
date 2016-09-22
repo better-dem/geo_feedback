@@ -59,7 +59,7 @@ function addMarker(e, polygon, map) {
 		});
 		google.maps.event.addListener(marker, 'dragend', function() {
 			if (google.maps.geometry.poly.containsLocation(this.getCenter(), polygon) == false) {
-				alert("Marker dragged beyond bounds of polygon. Resetting.");
+				console.log("Marker dragged beyond bounds of polygon. Resetting.");
 				this.setCenter(marker_start_position);
 			}
 		});
