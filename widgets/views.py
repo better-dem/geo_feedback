@@ -2,6 +2,7 @@ from django.shortcuts import render
 from django.http import HttpResponse
 from .forms import SimpleTestWidgetForm
 import os
+import sys
 
 # Create your views here.
 def demo_map(request):
@@ -23,11 +24,15 @@ def simple_test_widget(request):
 	if request.method == 'POST':
 		form = SimpleTestWidgetForm(request.POST)
 		if form.is_valid():
+			sys.stderr.write("valid form")
+			sys.stderr.write(str(form.cleaned_data))
+			sys.stderr.flush()
 			return HttpResponse("Form is Valid")
 		else:
-			return render(request, 'widgets/simple_test_widget.html',
-				{'form': form})
+			sys.stderr.write("invalid form")
+			sys.stderr.write(str(form.cleaned_data))
+			sys.stderr.flush()
+			return render(request, 'widgets/simple_test_widget.html', {'form': form})
 	else:
 		form = SimpleTestWidgetForm()
-		return render(request, 'widgets/simple_test_widget.html',
-			{'form': form})
+		return render(request, 'widgets/simple_test_widget.html', {'form': form})
