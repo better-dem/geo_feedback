@@ -23,19 +23,22 @@ class DrawPolygonWidget(forms.Widget):
 		sys.stderr.write(" render_kwargs:")
 		sys.stderr.write(str(kwargs))
 		sys.stderr.flush()
+		if value is None:
+			value = 'null'
+
 		render_html = """
 	    <div class='map_widget' id="{}"></div>
 	    <input type='text' name='{}' id='{}' value='' />
 
 	    <script type="text/javascript">
-		    google.maps.event.addDomListener(window, 'load', map_function('{}', '{}'));
+		    google.maps.event.addDomListener(window, 'load', map_function('{}', '{}', {}));
 		</script>
 		"""
 		render_html_with_id = render_html.format(div_id,
 			input_name,
 			input_id,
 			div_id,
-			input_id)
+			input_id, value)
 		return render_html_with_id
 	def __init__(self, *args, **kwargs):
 		super(DrawPolygonWidget, self).__init__(*args, **kwargs)
@@ -81,6 +84,6 @@ class SimpleTestWidgetForm(forms.Form):
 
 	widget_a = forms.CharField(max_length=100)
 	widget_b = forms.CharField(max_length=100)
-	polygon_field = DrawPolygonField(label="Test Polygon Field");
-	polygon_field_2 = DrawPolygonField(label="Test Polygon Field 2");
+	polygon_field = DrawPolygonField(label="Test Polygon Field")
+	polygon_field_2 = DrawPolygonField(label="Test Polygon Field 2")
 
