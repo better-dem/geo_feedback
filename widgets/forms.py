@@ -1,8 +1,38 @@
 from django import forms
+from django.core.exceptions import ValidationError
 import os
 import sys
+import json
+import traceback
 
 api_key = os.environ["GOOGLE_MAPS_API_KEY"]
+
+
+def validate_polygon(point_array):
+	sys.stderr.write('validating >>>'+ str(point_array) + '\n')
+	sys.stderr.flush()
+	if point_array is None:
+		raise ValidationError("Error parsing point array", code="invalid")
+	for point in point_array:
+		if(len(point) != 2):
+			raise ValidationError("Point must compose of latitude and longitude",
+				code="invalid")
+		for p in point:
+			if not type(p) is float:
+				raise ValidationError("One of the coordinates is not float",
+					code='invalid')
+
+	if len(point_array) < 3:
+		raise ValidationError("At least three points required for polygon",
+			code='invalid')
+
+def is_polygon(point_array_string):
+	try:
+		point_array = json.loads(point_array_string)
+		validate_polygon(point_array)
+		return True
+	except:
+		return False
 
 
 class DrawPolygonWidget(forms.Widget):
@@ -17,13 +47,7 @@ class DrawPolygonWidget(forms.Widget):
 		div_id = 'poly_map_' + kwargs['attrs']['id']
 		input_name = name
 		input_id = kwargs['attrs']['id']
-		sys.stderr.write("render_args:")
-		sys.stderr.write(str(name) + 
-			' ' + str(value) + ' ' + str(args))
-		sys.stderr.write(" render_kwargs:")
-		sys.stderr.write(str(kwargs))
-		sys.stderr.flush()
-		if value is None:
+		if value is None or not is_polygon(value):
 			value = 'null'
 
 		render_html = """
@@ -40,22 +64,20 @@ class DrawPolygonWidget(forms.Widget):
 			div_id,
 			input_id, value)
 		return render_html_with_id
+
 	def __init__(self, *args, **kwargs):
 		super(DrawPolygonWidget, self).__init__(*args, **kwargs)
-		sys.stderr.write("init_args:")
-		sys.stderr.write(str(args))
-		sys.stderr.write(" init_kwargs:")
-		sys.stderr.write(str(kwargs))
-		sys.stderr.flush()
 
 
 class DrawPolygonField(forms.Field):
+
 	def __init__(self,
 		required= True,
 		widget=DrawPolygonWidget,
 		label=None,
 		initial=None,
 		help_text="",
+		validators=[validate_polygon],
 		*args,
 		**kwargs):
 		super(DrawPolygonField, self).__init__(required=required,
@@ -63,18 +85,24 @@ class DrawPolygonField(forms.Field):
 			label=label,
 			initial=initial,
 			help_text=help_text,
+			validators=validators,
 			*args,
 			**kwargs)
 
-	# def clean(self, value):
-	# 	super(DrawPolygonField, self).clean(value)
+	def to_python(self, value):
+		# Convert to expected python value (list of lists of latlngs)
+		value = super(DrawPolygonField, self).to_python(value)
+		try:
+			json_array = json.loads(value)
+		except:
+			raise ValidationError("Unable to parse input: '{}'".format(value),
+				code="invalid")
+		return json_array
 
 	def validate(self, value):
+		print value
+		sys.stdout.flush()
 		super(DrawPolygonField, self).validate(value)
-		if (value == None or value == "Test None"):
-			raise ValidationError("None value encountered", code='invalid')
-		else:
-			return value
 
 	def widget_attrs(self, widget):
 		attrs = super(DrawPolygonField, self).widget_attrs(widget)
