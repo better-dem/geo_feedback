@@ -1,10 +1,12 @@
 from django import forms
 from survey.models import FeedbackGoal
+from widgets.forms import DrawPolygonField
 
 class CreateProjectForm(forms.Form):
 	
 	project_name = forms.CharField(max_length=100)
-
+	polygon_field = DrawPolygonField(label="Region of interest")
+	
 	def __init__(self,  *args, **kwargs):
 		super(CreateProjectForm, self).__init__(*args, **kwargs)
 		goals = FeedbackGoal.objects.all()

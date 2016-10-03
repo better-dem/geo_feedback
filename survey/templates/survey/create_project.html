@@ -1,5 +1,6 @@
 <form action="/survey/create_project" method="post">
     {% csrf_token %}
+    {{ form.media }}
     {% for field in form %}
     <p>
         {{ field.errors }}
