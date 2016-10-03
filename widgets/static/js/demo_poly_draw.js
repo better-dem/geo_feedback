@@ -4,28 +4,71 @@
 // The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 // THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-// Display the coordinates below the map
 
-function initMap() {
+function getPolygonBounds(polygon) {
+	var bounds = new google.maps.LatLngBounds();
+	var paths = polygon.getPaths();
+	var path;
+	for (var i = 0; i < paths.getLength(); i++) {
+		path = paths.getAt(i);
+		for (var ii = 0; ii < path.getLength(); ii++) {
+			bounds.extend(path.getAt(ii));
+		}
+	}
+	return bounds;
+}
+
+
+function polygonCoordWriter(polygon, coord_tag_id) {
+	return function() {
+		var len = polygon.getPath().getLength();
+		var jsonArray = [];
+		for (var i = 0; i < len; i++) {
+			jsonArray.push("[" + 
+				polygon.getPath().getAt(i).toUrlValue(5) + 
+				"]");
+		}
+		$('input[id='+coord_tag_id+']').val('['+jsonArray+']');
+		// document.getElementByName(coord_tag_id).value = jsonArray;
+	}
+}
+
+function getPolygonBoundsZoomLevel(polygonBounds) {
+	var GLOBE_WIDTH = 256; // a constant in Google's map projection
+	var west = polygonBounds.getNorthEast().lng();
+	var east = polygonBounds.getSouthWest().lng();
+	var angle = east - west;
+	if (angle < 0) {
+  		angle += 360;
+	}
+	var zoom = Math.round(Math.log(pixelWidth * 360 / angle / GLOBE_WIDTH) / Math.LN2);
+	return zoom;
+}
+
+function get_google_maps_latlngs(coordinates) {
+	var coords = [];
+	for (var i = 0; i < coordinates.length; i++) {
+		var coord = coordinates[i];
+		var llng = new google.maps.LatLng(coord[0], coord[1]);
+		coords.push(llng);
+	}
+	return coords;
+}
+
+
+
+function map_function(div_id, coord_tag_id, coordinates) {
 	// Initialize map to certain coordinates
-	var my_center = new google.maps.LatLng(37.38, -122.0);
-	var map_options = {
-		zoom : 12,
-		center: my_center,
-        mapTypeId: 'terrain'
-    };
-	var map = new google.maps.Map(document.getElementById("poly-map"), map_options); 
-	// Initilalize polygon drawing
+	if (coordinates == null) {
+		coordinates = [[37.41626,-122.03691],
+			[37.37835,-122.0527], 
+			[37.39867,-121.97889]]
 
-	var orig_coords = [
-    	new google.maps.LatLng(37.4029,-122.01665), 
-		new google.maps.LatLng(37.37835,-122.0527), 
-		new google.maps.LatLng(37.39867,-121.97889), 
-	];
-
+	}
+	var coords = get_google_maps_latlngs(coordinates);
   	// Styling and controls
-  	my_polygon = new google.maps.Polygon({
-  		paths : orig_coords,
+  	var polygon = new google.maps.Polygon({
+  		paths : coords,
   		draggable : true,
   		editable : true,
   		strokeColor : '#FF0000',
@@ -34,22 +77,22 @@ function initMap() {
   		fillColor : '#FF0000',
   		fillOpacity : 0.25
   	});
-  	my_polygon.setMap(map);
+	var center = getPolygonBounds(polygon).getCenter();
+	var bounds = getPolygonBounds(polygon);
+	var map_options = {
+		center: center,
+        mapTypeId: 'terrain'
+    };
+	var map = new google.maps.Map(document.getElementById(div_id), map_options); 
+	map.fitBounds(bounds);
+	// Initilalize polygon drawing
 
-  	google.maps.event.addListener(my_polygon.getPath(), "insert_at", getPolygonCoords);
-  	google.maps.event.addListener(my_polygon.getPath(), "set_at", getPolygonCoords);
-  	google.maps.event.addListener(my_polygon.getPath(), "remove_at", getPolygonCoords);
 
-}
 
-function getPolygonCoords() {
-	var len = my_polygon.getPath().getLength();
-	var htmlStr = "";
-	for (var i = 0; i < len; i++) {
-		htmlStr += "new google.maps.LatLng(" + 
-			my_polygon.getPath().getAt(i).toUrlValue(5) + 
-			"), ";
-	}
-	console.log(htmlStr);
-	//document.getElementById('info').innerHtml = htmlStr;
+  	polygon.setMap(map);
+  	var coord_update_function = polygonCoordWriter(polygon, coord_tag_id);
+  	coord_update_function(polygon);
+  	google.maps.event.addListener(polygon.getPath(), "insert_at", coord_update_function);
+  	google.maps.event.addListener(polygon.getPath(), "set_at", coord_update_function);
+  	google.maps.event.addListener(polygon.getPath(), "remove_at", coord_update_function);
 }
