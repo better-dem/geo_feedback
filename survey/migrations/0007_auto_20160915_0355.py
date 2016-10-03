@@ -6,11 +6,12 @@ from django.db import migrations
 
 def create_questions(apps, schema_editor):
     
+    FeedbackGoal = apps.get_model("survey", "FeedbackGoal")
     TMCQ = apps.get_model("survey", "TMCQ")
 
     #TMCQ.objects.all().delete()
-    aesthetics = FeedbackGoal.objects.filter(name = "Aesthetics")
-    transportation = FeedbackGoal.objects.filter(name = "Transportation")
+    aesthetics = FeedbackGoal.objects.filter(name = "Aesthetics")[0]
+    transportation = FeedbackGoal.objects.filter(name = "Transportation")[0]
 
     question1 = TMCQ()
     question1.feedback_goal = aesthetics
@@ -34,7 +35,7 @@ def create_questions(apps, schema_editor):
 
     question2.save()
 
-	question3 = TMCQ()
+    question3 = TMCQ()
     question3.feedback_goal = transportation
     question3.question_text = "Who is better looking"
     question3.option1 = "Adam"
@@ -52,5 +53,5 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
-    	migrations.RunPython(create_questions),
+        migrations.RunPython(create_questions),
     ]
