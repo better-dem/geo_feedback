@@ -9,6 +9,7 @@ def demo_map(request):
     return render(request,
                   'widgets/demo_map.html',
                   {'api_key' : os.environ["GOOGLE_MAPS_API_KEY"]})
+
 def demo_poly_mark(request):
     return render(request,
                   'widgets/demo_poly_mark.html',
