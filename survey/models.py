@@ -11,6 +11,7 @@ class FeedbackGoal(models.Model):
 class Project(models.Model):
 	name = models.CharField(max_length = 100)
 	feedback_goals = models.ManyToManyField(FeedbackGoal)
+	polygon_coords = models.CharField(max_length = 500)
 
 class Question(models.Model):
 	feedback_goal = models.ForeignKey('FeedbackGoal', on_delete=models.CASCADE)
