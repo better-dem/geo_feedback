@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from django.http import HttpResponse
 from survey.models import Project, FeedbackGoal
-from .forms import CreateProjectForm
+from .forms import CreateProjectForm, ProjectResponseForm
 import os
 
 def index(request):
@@ -30,6 +30,21 @@ def new_project(request):
     else:
         form = CreateProjectForm()
         return render(request, 'survey/create_project.html', {'form': form })
+
+def project_response(request, project_id):
+    project = Project.objects.get(pk=project_id)
+    if request.method == 'POST':
+        form = ProjectResponseForm(project, request.POST )        
+        if form.is_valid():
+            pass      
+            
+            return HttpResponse("Form is valid")
+        else:
+            return render(request, 'survey/create_project.html', {'form': form })
+    else:
+        form = ProjectResponseForm(project)
+        return render(request, 'survey/create_project.html', {'form': form })
+
 
 def show_projects(request):
     projects = Project.objects.all()

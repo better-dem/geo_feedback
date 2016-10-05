@@ -1,5 +1,5 @@
 from django import forms
-from survey.models import FeedbackGoal
+from survey.models import FeedbackGoal, TMCQ, Question
 from widgets.forms import DrawPolygonField
 
 class CreateProjectForm(forms.Form):
@@ -23,20 +23,26 @@ class ProjectResponseForm(forms.Form):
 		ans = project.name+ ":"
 		for goal in project.feedback_goals.all():
 			for question in Question.objects.filter(feedback_goal = goal):
-				label = question.question_text
-				var_name = "field_" + str(question.id)
 
-				choices = []
+				try:
+					tmcq = question.tmcq
 
-				if not question.option1 == "":
-					choices.append(("1", question.option1))
-				if not question.option2 == "":
-					choices.append(("2", question.option2))
-				if not question.option3 == "":
-					choices.append(("3", question.option3))
-				if not question.option4 == "":
-					choices.append(("4", question.option4))
-				if not question.option5 == "":
-					choices.append(("5", question.option5))
-				
-				self.fields[var_name] = forms.ChoiceField(label = label, required=False, choices = choices )
+					label = question.question_text
+					var_name = "field_" + str(question.id)
+
+					choices = []
+
+					if not tmcq.option1 == "":
+						choices.append(("1", tmcq.option1))
+					if not tmcq.option2 == "":
+						choices.append(("2", tmcq.option2))
+					if not tmcq.option3 == "":
+						choices.append(("3", tmcq.option3))
+					if not tmcq.option4 == "":
+						choices.append(("4", tmcq.option4))
+					if not tmcq.option5 == "":
+						choices.append(("5", tmcq.option5))
+					
+					self.fields[var_name] = forms.ChoiceField(label = label, required=False, choices = choices )
+				except:
+					raise Exception("Invalid question type. Only TMCQ supported")
