@@ -19,17 +19,13 @@ class ProjectResponseForm(forms.Form):
 
 	def __init__(self, project, *args, **kwargs):
 		super(ProjectResponseForm, self).__init__(*args, **kwargs)
-
 		ans = project.name+ ":"
 		for goal in project.feedback_goals.all():
 			for question in Question.objects.filter(feedback_goal = goal):
-
 				try:
 					tmcq = question.tmcq
-
 					label = question.question_text
-					var_name = "field_" + str(question.id)
-
+					var_name = "field_prf_" + str(question.id)
 					choices = []
 
 					if not tmcq.option1 == "":
