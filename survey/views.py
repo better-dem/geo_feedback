@@ -7,20 +7,9 @@ import os
 def index(request):
     num_projects = Project.objects.all().count()
     num_responses = ProjectResponse.objects.all().count()
-
-
     return render(request, 'survey/index.html', {'num_projects': num_projects, 'num_responses': num_responses})
-    ans = project.name+ ":"
-    ans += "Number of responses: " + str(num_responses) + "    "
-    ans += project.polygon_coords + "    "
-    for goal in project.feedback_goals.all():
-        ans+=(goal.name + "  ")
-    return HttpResponse(ans)
-    
-    return HttpResponse("Hello, world. You're at the survey index.")
 
 def new_project(request):
-    
     if request.method == 'POST':
         form = CreateProjectForm(request.POST)
         if form.is_valid():
@@ -35,7 +24,7 @@ def new_project(request):
                 if form.cleaned_data[var_name]:
                     project.feedback_goals.add(goal)
             
-            return HttpResponse("Form is valid")
+            return render(request, 'survey/thanks.html', {"action_description": "creating a new project", "item_link": "/show_project/"+str(project.id)})
         else:
             return render(request, 'survey/generic_form.html', {'form': form, 'action_path' : request.path})
     else:
@@ -68,7 +57,7 @@ def project_response(request, project_id):
                         qr.option_index = int(form.cleaned_data[key])
                         qr.save()
                         
-            return HttpResponse("Form is valid")
+            return render(request, 'survey/thanks.html', {"action_description": "responding to "+title})
         else:
             return render(request, 'survey/generic_form.html', {'form': form, 'action_path' : request.path, 'form_title' : title})
     else:
