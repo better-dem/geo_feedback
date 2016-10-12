@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+	<title>Geo Feedback: Land use planning community outreach tool</title>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    </head>
+    <body>
+	
+	<h1>Geo Feedback</h1>
+	<h2>The Land Use Planning Community Outreach Web Tool</h2>
+	
+
+	<p>
+	    We are currently hosting {{ num_projects }} projects and have received {{ num_responses }} responses.
+	</p>
+
+	<h3>Citizens</h3>
+	<p>
+	    Give your feedback to a planning project:<br>
+	    Project ID: <input type="text" id="project_id"><br>
+	    <input type="button" class="btn btn-info" value="Give Feedback" onclick="window.location.href='/project_response/'+document.getElementById('project_id').value">
+	</p>
+
+	<h3>Administrators</h3>
+	<p>
+	    Create a new Land Use Planning Outreach Project:<br>
+	    <a href="/create_project" class="btn btn-info" role="button">New Project</a>
+	</p>
+
+	<p>
+	    Administer an Existing Project:<br>
+	    Project ID: <input type="text" id="admin_project_id"><br>
+	    <input type="button" class="btn btn-info" value="Administer Project" onclick="window.location.href='/show_project/'+document.getElementById('admin_project_id').value">
+	</p>
+	
+    </body>
+</html>

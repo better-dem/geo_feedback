@@ -1,5 +1,9 @@
-<form action="/survey/create_project" method="post">
+{% if form_title %}
+<h1>{{ form_title }}</h1>
+{% endif %}
+<form action="{{ action_path }}" method="post">
     {% csrf_token %}
+    {{ form.media }}
     {% for field in form %}
     <p>
         {{ field.errors }}
