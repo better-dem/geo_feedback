@@ -5,6 +5,18 @@ from .forms import CreateProjectForm, ProjectResponseForm
 import os
 
 def index(request):
+    num_projects = Project.objects.all().count()
+    num_responses = ProjectResponse.objects.all().count()
+
+
+    return render(request, 'survey/index.html', {'num_projects': num_projects, 'num_responses': num_responses})
+    ans = project.name+ ":"
+    ans += "Number of responses: " + str(num_responses) + "    "
+    ans += project.polygon_coords + "    "
+    for goal in project.feedback_goals.all():
+        ans+=(goal.name + "  ")
+    return HttpResponse(ans)
+    
     return HttpResponse("Hello, world. You're at the survey index.")
 
 def new_project(request):
