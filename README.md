@@ -22,3 +22,8 @@ $ heroku local -f Procfile.windows
 ### Migrating
 
 $ heroku local release -f Procfile.windows
+
+
+### Running tests locally
+
+$ heroku local:run python manage.py test
