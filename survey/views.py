@@ -59,10 +59,10 @@ def project_response(request, project_id):
                         
             return render(request, 'survey/thanks.html', {"action_description": "responding to "+title})
         else:
-            return render(request, 'survey/generic_form.html', {'form': form, 'action_path' : request.path, 'form_title' : title})
+            return render(request, 'survey/generic_form.html', {'form': form, 'action_path' : request.path, 'title' : title})
     else:
         form = ProjectResponseForm(project)
-        return render(request, 'survey/generic_form.html', {'form': form, 'action_path' : request.path, 'form_title' : title})
+        return render(request, 'survey/generic_form.html', {'form': form, 'action_path' : request.path, 'title' : title})
 
 
 def show_projects(request):
