@@ -9,8 +9,6 @@ api_key = os.environ["GOOGLE_MAPS_API_KEY"]
 
 
 def validate_polygon(point_array):
-	sys.stderr.write('validating >>>'+ str(point_array) + '\n')
-	sys.stderr.flush()
 	if point_array is None:
 		raise ValidationError("Error parsing point array", code="invalid")
 	for point in point_array:
@@ -100,8 +98,6 @@ class DrawPolygonField(forms.Field):
 		return json_array
 
 	def validate(self, value):
-		print value
-		sys.stdout.flush()
 		super(DrawPolygonField, self).validate(value)
 
 	def widget_attrs(self, widget):
