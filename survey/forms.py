@@ -1,6 +1,6 @@
 from django import forms
 from survey.models import FeedbackGoal, TMCQ, Question
-from widgets.forms import EditablePolygonField
+from widgets.forms import EditablePolygonField, ShowPolygonField
 
 class CreateProjectForm(forms.Form):
     project_name = forms.CharField(max_length=100)
@@ -17,6 +17,8 @@ class CreateProjectForm(forms.Form):
 class ProjectResponseForm(forms.Form):
     def __init__(self, project, *args, **kwargs):
         super(ProjectResponseForm, self).__init__(*args, **kwargs)
+        self.fields["polygon_field"] = ShowPolygonField(label="Region of interest", initial=project.polygon_coords)
+
         ans = project.name+ ":"
         for question in project.get_questions():
             try:
