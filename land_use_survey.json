@@ -1,0 +1,75 @@
+[
+{
+    "model": "survey.feedbackgoal",
+    "pk": 1,
+    "fields": {
+        "name": "Aesthetics",
+        "description": "Obtain aesthetic preferences: Selecting this option will cause relevant survey questions to be displayed"
+    }
+},
+{
+    "model": "survey.feedbackgoal",
+    "pk": 2,
+    "fields": {
+        "name": "Transportation",
+        "description": "Obtain transportation preferences: Selecting this option will cause relevant survey questions to be displayed"
+    }
+},
+{
+    "model": "survey.question",
+    "pk": 1,
+    "fields": {
+        "feedback_goal": 1,
+        "question_text": "Is David a good boss"
+    }
+},
+{
+    "model": "survey.question",
+    "pk": 2,
+    "fields": {
+        "feedback_goal": 1,
+        "question_text": "Is Erika a good employee"
+    }
+},
+{
+    "model": "survey.question",
+    "pk": 3,
+    "fields": {
+        "feedback_goal": 2,
+        "question_text": "Who is better looking"
+    }
+},
+{
+    "model": "survey.tmcq",
+    "pk": 1,
+    "fields": {
+        "option1": "No",
+        "option2": "Hell No",
+        "option3": "Are you kidding me?",
+        "option4": "",
+        "option5": ""
+    }
+},
+{
+    "model": "survey.tmcq",
+    "pk": 2,
+    "fields": {
+        "option1": "Yes",
+        "option2": "Hell Yes",
+        "option3": "Are you kidding me?",
+        "option4": "",
+        "option5": ""
+    }
+},
+{
+    "model": "survey.tmcq",
+    "pk": 3,
+    "fields": {
+        "option1": "Adam",
+        "option2": "David",
+        "option3": "Are you kidding me?",
+        "option4": "Adammmmmmm",
+        "option5": "This is not a question"
+    }
+}
+]
