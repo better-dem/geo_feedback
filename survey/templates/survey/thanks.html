@@ -1,3 +1,5 @@
+{% extends "survey/base.html" %}
+{% block content %}
 <p>
 Thank you for {{ action_description }}.
 </p>
@@ -7,7 +9,4 @@ Thank you for {{ action_description }}.
 You can viewthis item <a href={{ item_link }}>here</a>.
 </p>
 {% endif %}
-
-<p>
-<a href="/"> Return home </a>
-</p>
+{% endblock %}
