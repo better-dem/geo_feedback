@@ -2,7 +2,7 @@ from __future__ import unicode_literals
 from django.db import models
 
 class FeedbackGoal(models.Model):
-    name = models.CharField(max_length = 30)
+    name = models.CharField(max_length = 100)
     description = models.CharField(max_length = 200)
 
 class Project(models.Model):
@@ -23,11 +23,11 @@ class Question(models.Model):
 
 #Text Multi Choice Question
 class TMCQ(Question):
-    option1 = models.CharField(max_length = 30)
-    option2 = models.CharField(max_length = 30)
-    option3 = models.CharField(max_length = 30)
-    option4 = models.CharField(max_length = 30)
-    option5 = models.CharField(max_length = 30)
+    option1 = models.CharField(max_length = 100)
+    option2 = models.CharField(max_length = 100)
+    option3 = models.CharField(max_length = 100)
+    option4 = models.CharField(max_length = 100)
+    option5 = models.CharField(max_length = 100)
 
 class ProjectResponse(models.Model):
     project = models.ForeignKey(
